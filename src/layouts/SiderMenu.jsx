@@ -1,39 +1,74 @@
 import React from 'react'
-import { Menu, Icon } from 'antd';
+import {Layout, Menu, Icon } from 'antd';
+import "./SiderMenu.less";
 const { Sider} = Layout;
 const { SubMenu } = Menu
 
+const menuList = [
+    {
+        name: 'subnav 1',
+        icon: 'user',
+        subMenu: ['option1','option2','option3','option4']
+    },
+    {
+        name: 'subnav 2',
+        icon: 'laptop',
+        subMenu: ['option1','option2','option3','option4']
+    },
+    {
+        name: 'subnav 3',
+        icon: 'notification',
+        subMenu: ['option1','option2','option3','option4']
+    },
+    {
+        name: 'subnav 4',
+        icon: 'user',
+        subMenu: ['option1','option2','option3','option4']
+    },
+    {
+        name: 'subnav 5',
+        icon: 'laptop',
+        subMenu: ['option1','option2','option3','option4']
+    },
+    {
+        name: 'subnav 6',
+        icon: 'notification',
+        subMenu: ['option1','option2','option3','option4']
+    }
+]
+
 class SiderMenu extends React.Component{
+    constructor(props){
+        super(props)
+        this.state = {
+            menuList: menuList
+        }
+    }
     render(){
         return(
-            <Sider width={256} style={{borderRight: 0, background: '#001529' }}>
-                <div style={{borderRight: 0, background: '#002140', height: '64px'}}></div>
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
-                    style={{ height: '100%', background: '#001529', borderRight: 0, color: 'hsla(0,0%,100%,.65)' }}
-                    >
-                    <SubMenu key="sub1" title={<span><Icon type="user" />subnav 1</span>}>
-                        <Menu.Item key="1">option1</Menu.Item>
-                        <Menu.Item key="2">option2</Menu.Item>
-                        <Menu.Item key="3">option3</Menu.Item>
-                        <Menu.Item key="4">option4</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub2" title={<span><Icon type="laptop" />subnav 2</span>}>
-                        <Menu.Item key="5">option5</Menu.Item>
-                        <Menu.Item key="6">option6</Menu.Item>
-                        <Menu.Item key="7">option7</Menu.Item>
-                        <Menu.Item key="8">option8</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub3" title={<span><Icon type="notification" />subnav 3</span>}>
-                        <Menu.Item key="9">option9</Menu.Item>
-                        <Menu.Item key="10">option10</Menu.Item>
-                        <Menu.Item key="11">option11</Menu.Item>
-                        <Menu.Item key="12">option12</Menu.Item>
-                    </SubMenu>
-                </Menu>
+            <Sider className='sider-menu' width={256}>
+                <div style={{borderRight: 0, background: '#002140', width: '256px', height: '64px'}}></div>
+                <div style={{overflowY: 'auto', height: 'calc(100vh - 64px)'}}>
+                    <Menu
+                        mode="inline"
+                        theme="dark"
+                        defaultOpenKeys={['sub1']}>
+                        {
+                            this.state.menuList.map((menu, index) => {
+                                return(
+                                    <SubMenu key={index} title={<span><Icon type={menu.icon}/>{menu.name}</span>}>
+                                        {
+                                            menu.subMenu.map((subItem, index) => <Menu.Item key={index}>{subItem}</Menu.Item>)
+                                        }
+                                    </SubMenu>
+                                )
+                            })
+                        }
+                    </Menu>
+                </div>
             </Sider>
         )
     }
 }
+
+export default SiderMenu

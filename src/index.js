@@ -18,6 +18,22 @@ class App extends React.Component{
             <LocaleProvider locale={zhCN}>
                     <BasicLayout>
                         <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
+                        <Home />
                     </BasicLayout>
             </LocaleProvider>
         )
