@@ -1,40 +1,26 @@
 import React from 'react'
 import {Layout, Menu, Icon } from 'antd';
-import "./SiderMenu.less";
+import style from "./SiderMenu.less";
 const { Sider} = Layout;
-const { SubMenu } = Menu
+const { SubMenu, Item } = Menu
 
+// 菜单
 const menuList = [
     {
-        name: 'subnav 1',
+        name: '商品',
+        icon: 'appstore-o',
+        subMenu: ['商品列表','品类列表']
+    },
+    {
+        name: '订单',
+        icon: 'file-text',
+        subMenu: ['订单列表']
+    },
+    {
+        name: '用户',
         icon: 'user',
-        subMenu: ['option1','option2','option3','option4']
+        subMenu: ['用户管理']
     },
-    {
-        name: 'subnav 2',
-        icon: 'laptop',
-        subMenu: ['option1','option2','option3','option4']
-    },
-    {
-        name: 'subnav 3',
-        icon: 'notification',
-        subMenu: ['option1','option2','option3','option4']
-    },
-    {
-        name: 'subnav 4',
-        icon: 'user',
-        subMenu: ['option1','option2','option3','option4']
-    },
-    {
-        name: 'subnav 5',
-        icon: 'laptop',
-        subMenu: ['option1','option2','option3','option4']
-    },
-    {
-        name: 'subnav 6',
-        icon: 'notification',
-        subMenu: ['option1','option2','option3','option4']
-    }
 ]
 
 class SiderMenu extends React.Component{
@@ -46,8 +32,8 @@ class SiderMenu extends React.Component{
     }
     render(){
         return(
-            <Sider className='sider-menu' width={256}>
-                <div style={{borderRight: 0, background: '#002140', width: '256px', height: '64px'}}></div>
+            <Sider className={style['sider-menu']} width={256}>
+                <div className={style.logo} style={{}}><b>HAPPY</b>MMALL</div>
                 <div style={{overflowY: 'auto', height: 'calc(100vh - 64px)'}}>
                     <Menu
                         mode="inline"
@@ -58,7 +44,7 @@ class SiderMenu extends React.Component{
                                 return(
                                     <SubMenu key={index} title={<span><Icon type={menu.icon}/>{menu.name}</span>}>
                                         {
-                                            menu.subMenu.map((subItem, index) => <Menu.Item key={index}>{subItem}</Menu.Item>)
+                                            menu.subMenu.map((subItem, _index) => <Item key={index + '' + _index}>{subItem}</Item>)
                                         }
                                     </SubMenu>
                                 )

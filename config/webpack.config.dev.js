@@ -158,12 +158,15 @@ module.exports = {
           // in development "style" loader enables hot editing of CSS.
           {
             test: /\.(css|less)$/,
+            exclude: /node_modules/,
             use: [
               require.resolve('style-loader'),
               {
                 loader: require.resolve('css-loader'),
                 options: {
-                  importLoaders: 1,                  
+                  importLoaders: 1,  
+                  modules: true,    
+                  localIdentName: '[local]_[hash:base64:5]',         
                   sourcemap: true,
                 },
               },
@@ -191,7 +194,48 @@ module.exports = {
               {
                 loader: require.resolve('less-loader'),
                 options: {
+                  sourceMap: true
+                }
+              }
+            ],
+          },
+          {
+            test: /\.(css)$/,
+            include: /node_modules/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,            
+                  sourcemap: true,
+                },
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  // Necessary for external CSS imports to work
+                  // https://github.com/facebookincubator/create-react-app/issues/2677
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9', // React doesn't support IE8 anyway
+                      ],
+                      flexbox: 'no-2009',
+                    }),
+                  ],
                   sourceMap: true,
+                },
+              },
+              {
+                loader: require.resolve('less-loader'),
+                options: {
+                  sourceMap: true
                 }
               }
             ],
