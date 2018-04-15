@@ -1,11 +1,23 @@
-.global-header{
+.userMenu{
+  :global(.ant-dropdown-menu-item) {
+    width: 160px;
+  }
+}
+
+.header{
     width: 100%;
     height: 100%;
     background-color: #fff;
     box-shadow: 0 1px 4px rgba(0,21,41,.08);
     padding-right: 12px;
-    .header-right{
-        float: right;
+}
+.right{
+    float: right;
+    height: 100%;
+    .rightItem{
+        cursor: pointer;
+        padding: 0 12px;
+        display: inline-block;
         height: 100%;
         .avatar{
             vertical-align: middle;
@@ -14,11 +26,9 @@
         .name{
             vertical-align: middle;
         }
+        &:hover,
+        &:global(.ant-popover-open) {
+            background: #e6f7ff;
+        }
     }
 }
-:global {
-    .ant-layout {
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-  }

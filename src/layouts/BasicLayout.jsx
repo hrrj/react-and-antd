@@ -1,12 +1,18 @@
 import React from 'react'
 import { Layout } from 'antd';
+import { connect } from 'react-redux'
 import SiderMenu from './SiderMenu'
 import GlobalHeader from './GlobalHeader'
 
 const { Header, Content } = Layout;
 
 class BasicLayout extends React.Component{
-    
+    componentWillMount(){
+        if(!this.props.authority){
+            alert('请登录管理员!')
+            this.props.history.push('/login')
+        }
+    }
     render(){
         return(
             <Layout style={{height: '100vh'}}>
@@ -24,4 +30,7 @@ class BasicLayout extends React.Component{
     }
 }
 
-export default BasicLayout
+export default connect(state => {
+    // 从store中获取权限
+    return {authority: state.userData.authority}
+})(BasicLayout)
