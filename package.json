@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.3.3",
     "autoprefixer": "7.1.6",
+    "axios": "^0.18.0",
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
@@ -111,5 +112,15 @@
     "babel-plugin-import": "^1.6.7",
     "less": "^3.0.1",
     "less-loader": "^4.1.0"
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://admintest.happymmall.com",
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api/manage": "/manage",
+        "^/api/user": "/user"
+      }
+    }
   }
 }

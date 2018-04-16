@@ -10,8 +10,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
     combineReducers({...userData}),
-    applyMiddleware(...middleware),
-    composeWithDevTools()
+    composeWithDevTools(
+      applyMiddleware(...middleware),
+    )
 )
 
 // 每次 state 更新时，打印日志
