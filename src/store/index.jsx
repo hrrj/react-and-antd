@@ -1,6 +1,7 @@
 import { createStore, combineReducers,applyMiddleware } from "redux"
 import { createLogger } from "redux-logger"
 import * as userData from './user/reducer'
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 const middleware = [];
 if (process.env.NODE_ENV !== 'production') {
@@ -9,7 +10,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
     combineReducers({...userData}),
-    applyMiddleware(...middleware)
+    applyMiddleware(...middleware),
+    composeWithDevTools()
 )
 
 // 每次 state 更新时，打印日志

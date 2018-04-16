@@ -1,7 +1,7 @@
 import * as types from './actin-types'
 
 const defaultState = {
-    authority: false
+    authority: true
 }
 
 export const userData = (state = defaultState, action = {}) => {
