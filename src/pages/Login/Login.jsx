@@ -1,16 +1,39 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { changeAuthority } from '../../store/user/action'
-import { Form, Icon, Input, Button, Row, Col } from 'antd';
+import { Form, Icon, Input, Button, Row, Col, message } from 'antd'
 import style from './Login.less'
+import UserService from '../../service/UserService';
 const FormItem = Form.Item;
 
 class Login extends React.Component{
-    loginTo(){
-        // 改变登录状态
-        this.props.changeAuthority(true)
-        // 跳转到首页
-        this.props.history.push('/')
+    constructor(props){
+        super(props)
+        this.state = {
+            username: '',
+            password: ''
+        }
+    }
+    onInputChage(e){
+        let name = e.target.name,
+            value = e.target.value
+        this.setState({
+            [name]: value
+        })
+    }
+    onSubmit(){
+        let loginInfo = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        UserService.login(loginInfo).then(res => {
+            // 改变登录状态
+            this.props.changeAuthority(true)
+            // 跳转到首页
+            this.props.history.push('/')
+        }).catch(errMsg => {
+            message.error(errMsg)
+        })
     }
     render(){
         return(
@@ -21,18 +44,17 @@ class Login extends React.Component{
                             <Icon className={style.logo} type='api' />
                         </FormItem>
                         <FormItem>
-                            <Input prefix={<Icon type="user"/>} placeholder="Username" />
+                            <Input prefix={<Icon type="user"/>} name='username' placeholder="Username" onChange={(e) => this.onInputChage(e)} />
                         </FormItem>
                         <FormItem>
-                            <Input prefix={<Icon type="lock"/>} type="password" placeholder="Password" />
+                            <Input prefix={<Icon type="lock"/>} type="password" name='password' placeholder="Password" onChange={(e) => this.onInputChage(e)}/>
                         </FormItem>
-                        <Button className={style.submitBtn} type="primary" htmlType="submit">
+                        <Button className={style.submitBtn} type="primary" htmlType="submit" onClick={() => this.onSubmit()}>
                             Log in
                         </Button>
                     </Form>
                 </Col>
             </Row>
-            
         )
     }
 }

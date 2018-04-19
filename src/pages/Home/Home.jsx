@@ -20,9 +20,15 @@ class Home extends Component {
   loadCount(){
     HomeService.getHomeCount().then(res => {
       this.setState(res)
-    }).catch(msg => {
-      message.error(msg)
+    }).catch(errMsg => {
+      message.error(errMsg)
     })
+  }
+  componentWillUnmount(){
+    // 重写setState， 防止异步请求导致报错
+    this.setState = (state, callback) => {
+      return;
+    };
   }
   render() {
     return (
