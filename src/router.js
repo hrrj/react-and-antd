@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import BasicLayout from './layouts/BasicLayout'
 import Login from './pages/Login/Login'
 import Home from './pages/Home/Home'
+import UserList from './pages/User/UserList'
 
 class Router extends React.Component{
     LayoutRouter(props){
@@ -10,6 +11,7 @@ class Router extends React.Component{
             <BasicLayout history={props.history}>
                 <Switch>
                     <Route exact path="/" component={Home}/>
+                    <Route path='/user' component={UserList}/>
                 </Switch>
             </BasicLayout>
         )
@@ -18,8 +20,8 @@ class Router extends React.Component{
         return(
             <BrowserRouter>
                 <Switch>
-                    <Route exact path='/' component={(props) => this.LayoutRouter(props)}></Route>
-                    <Route path='/login' component={Login}></Route>
+                    <Route path='/login' component={Login}/>
+                    <Route path='/' component={(props) => this.LayoutRouter(props)}/>
                 </Switch>
             </BrowserRouter>
         )
