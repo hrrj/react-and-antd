@@ -10,13 +10,20 @@ class UserList extends React.Component{
         this.state = {
             list: [],
             pageNum: 1,
+            loading: false,
         }
     }
     componentWillMount(){
         this.loadUserList()
     }
+    // 加载用户列表
     loadUserList(){
-        UserService.getUserList({pageNum: this.state.pageNum}).then(res => {
+        this.setState({
+            loading: true
+        })
+        UserService.getUserList({
+            pageNum: this.state.pageNum,
+        }).then(res => {
             // 格式化列表数据
             res.list = res.list.map(function(user, index){
                 return {
@@ -28,12 +35,16 @@ class UserList extends React.Component{
                     createTime: new Date(user.createTime).toLocaleString()
                 }
             })
-            this.setState(res)
+            this.setState({
+                loading: false,
+                ...res
+            })
         }).catch(errMsg => {
             message.error(errMsg)
         })
     }
-    onPageNumChange(pageNum){
+    // 改变页码事件
+    onChange(pageNum){
         this.setState({pageNum}, () => this.loadUserList())
     }
     componentWillUnmount(){
@@ -64,14 +75,16 @@ class UserList extends React.Component{
             <div className={style.userList}>
                 <Table className={style.userTable} 
                     title={() => '用户列表'} 
+                    loading={this.state.loading}
                     dataSource={this.state.list} 
                     columns={columns} 
                     pagination={{
                         defaultCurrent: this.state.pageNum,
                         total: this.state.total,
-                        onChange: (pageNum) => this.onPageNumChange(pageNum)
+                        showQuickJumper: true,
+                        onChange: (pageNum) => this.onChange(pageNum)
                     }}
-                    />
+                />
             </div>
         )
     }

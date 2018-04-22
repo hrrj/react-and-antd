@@ -14,6 +14,7 @@ class Login extends React.Component{
             password: ''
         }
     }
+    // 输入框监听
     onInputChage(e){
         let name = e.target.name,
             value = e.target.value
@@ -21,6 +22,7 @@ class Login extends React.Component{
             [name]: value
         })
     }
+    // 提交
     onSubmit(){
         let loginInfo = {
             username: this.state.username,

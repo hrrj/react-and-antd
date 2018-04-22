@@ -35,19 +35,19 @@ class Home extends Component {
       <div className={style.home}>
         <Row gutter={24}>
           <Col className={style.colorBox} xs={24} sm={8}>
-            <Link className={style.colorItem} to='/user'>
+            <Link className={style.colorItem} to='/user/list'>
               <div className={style.count}>{this.state.userCount}</div>
               <div className={style.desc}><Icon type='appstore-o'></Icon> 用户总数</div>
             </Link>
           </Col>
           <Col className={style.colorBox} xs={24} sm={8}>
-            <Link className={style.colorItem} to='/product'>
+            <Link className={style.colorItem} to='/product/list'>
               <div className={style.count}>{this.state.productCount}</div>
               <div className={style.desc}><Icon type='file-text'></Icon> 商品总数</div>
             </Link>
           </Col>
           <Col className={style.colorBox} xs={24} sm={8}>
-            <Link className={style.colorItem} to='/order'>
+            <Link className={style.colorItem} to='/order/list'>
               <div className={style.count}>{this.state.orderCount}</div>
               <div className={style.desc}><Icon type='user'></Icon> 订单总数</div>
             </Link>
