@@ -1,11 +1,22 @@
 import React from 'react'
-import { Avatar,Dropdown,Menu,Icon } from 'antd'
+import { Avatar,Dropdown,Menu,Icon,message } from 'antd'
 import style from './GlobalHeader.less'
+import UserService from '../service/UserService';
 
 class GlobalHeader extends React.Component{
+    // 菜单点击事件
+    onMenuClick(item){
+        if(item.key === 'logout'){
+            UserService.logout().then(() => {
+                this.props.history.push('/login')
+            }).catch(errMsg => {
+                message.error(errMsg)
+            })
+        }
+    }
     render(){
         const userMenu = (
-            <Menu className={style.userMenu}>
+            <Menu className={style.userMenu} onClick={(item) => this.onMenuClick(item)}>
               <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
             </Menu>
         );

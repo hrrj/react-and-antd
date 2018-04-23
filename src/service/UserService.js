@@ -6,11 +6,9 @@ import BaseService from './BaseService'
 class UserService extends BaseService{
     /**
      * 登录接口
-     * @param {username: '', password: ''} [params={}]
-     * @returns 
-     * @memberof UserService
+     * @param {*} params 
      */
-    async login(params = {}){
+    async login(params = {username: '', password: ''}){
         let result
         try{
             result = await this.axios('POST', '/api/manage/user/login.do', {
@@ -26,15 +24,28 @@ class UserService extends BaseService{
             throw result.msg
         }
     }
+
+    /**
+     * 退出登录
+     */
+    async logout(){
+        let result
+        try{
+            result = await this.axios('POST', '/api/user/logout.do')
+        }catch(err){
+            throw new Error('接口异常!').toString()
+        }
+        // 请求成功
+        if(result && result.status === 0){
+            return result.data
+        }
+    }
     
     /**
-     * 
-     * 
-     * @param {pageNum: ''} [params={}] 
-     * @returns 
-     * @memberof UserService
+     * 获取用户列表数据
+     * @param {*} params 
      */
-    async getUserList(params = {}){
+    async getUserList(params = {pageNum: ''}){
         let result
         try{
             result = await this.axios('POST', '/api/manage/user/list.do', {

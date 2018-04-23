@@ -1,32 +1,52 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { message, Table, Divider, Button } from 'antd'
+import { message, Table, Divider, Button, Input, Select, Form, Popconfirm } from 'antd'
 import ProductService from '../../service/ProductService'
-
 import style from './ProductList.less'
+
+const { Option } = Select
 
 class ProductList extends React.Component{
     constructor(props){
         super(props)
         this.state = {
             list: [],
+            listType: 'list',
             pageNum: 1,
             pageSize: 6,
             loading: false,
+            searchType : 'productId',
+            searchKeyword: '',
         }
     }
     componentWillMount(){
         this.loadProductList()
     }
+    // 搜索框类型变化事件
+    onTypeChage(value){
+        this.setState({
+            searchType: value
+        })
+    }
+    // 搜索框关键词变化事件
+    onKeywordChage(e){
+        this.setState({
+            searchKeyword: e.target.value
+        })
+    }
     // 加载用户列表
     loadProductList(){
-        this.setState({
-            loading: true
-        })
-        ProductService.getProductList({
+        this.setState({loading: true}) // 显示loading图标
+        let params = {
+            listType: this.state.listType,
             pageNum: this.state.pageNum,
-            pageSize: this.state.pageSize
-        }).then(res => {
+            pageSize: this.state.pageSize,
+        }
+        if(this.state.listType === 'search'){
+            params.searchType = this.state.searchType
+            params.searchKeyword = this.state.searchKeyword
+        }
+        ProductService.getProductList(params).then(res => {
             // 格式化列表数据
             res.list = res.list.map((product, index) => ({
                     key: index,
@@ -47,9 +67,29 @@ class ProductList extends React.Component{
             message.error(errMsg)
         })
     }
+    // 搜索商品事件
+    onSearch(){
+        let listType = this.state.searchKeyword === '' ? 'list' : 'search'
+        this.setState({
+            listType,
+            pageNum: 1,
+        }, () => this.loadProductList())
+    }
     // 改变页码事件
     onChange(pageNum){
         this.setState({pageNum}, () => this.loadProductList())
+    }
+    // 改变商品状态
+    onSetProductStatus(record){
+        ProductService.setSaleStatus({
+            productId: record.id,
+            status: record.status === 1 ? 2 : 1
+        }).then(res => {
+            message.success(res)
+            this.loadProductList()
+        }).catch(errMsg => {
+            message.error(errMsg)
+        })
     }
     componentWillUnmount(){
       // 重写setState， 防止异步请求导致报错
@@ -82,11 +122,15 @@ class ProductList extends React.Component{
             dataIndex: 'status',
             width: '15%',
             render: (text, record) => (
-                <Button type={record.status === 1 ? 'primary' : 'default'} size='small'>
-                {
-                    record.status === 1 ? '在售' : '已下架'
-                }
-                </Button>
+                <Popconfirm 
+                    title={record.status === 1 ? '确定要下架该商品？' : '确定要上架该商品？'} 
+                    onConfirm={() => this.onSetProductStatus(record)}>
+                    <Button type={record.status === 1 ? 'primary' : 'default'} size='small'>
+                    {
+                        record.status === 1 ? '在售' : '已下架'
+                    }
+                    </Button>
+                </Popconfirm>
             )
         }, {
             title: '操作',
@@ -102,7 +146,22 @@ class ProductList extends React.Component{
         }]
         return(
             <div className={style.productList}>
-                <Table className={style.productTable} 
+                <Form className={style.search}>
+                    <Select className={style.type} 
+                        defaultValue="productId" 
+                        name="searchType"
+                        onChange={(e) => this.onTypeChage(e)}>
+                        <Option value="productId">按商品ID查询</Option>
+                        <Option value="productName">按商品名称查询</Option>
+                    </Select>
+                    <Input className={style.keyword} 
+                        type='text'
+                        name='searchKeyword'
+                        value={this.state.searchKeyword}
+                        onChange={(e) => this.onKeywordChage(e)}/>
+                    <Button type='primary' htmlType="submit" onClick={() => this.onSearch()}>搜索</Button>
+                </Form>
+                <Table className={style.productTable}
                     title={() => '商品列表'} 
                     loading={this.state.loading}
                     dataSource={this.state.list} 
