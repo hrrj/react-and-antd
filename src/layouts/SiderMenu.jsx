@@ -2,11 +2,15 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import {Layout, Menu, Icon } from 'antd';
 import style from "./SiderMenu.less";
-const { Sider} = Layout;
 const { SubMenu, Item } = Menu
 
 // 菜单
 const menuList = [
+    {
+        name: '首页',
+        icon: 'medium',
+        path: '/'
+    },
     {
         name: '商品',
         icon: 'appstore-o',
@@ -44,31 +48,47 @@ class SiderMenu extends React.Component{
         }
     }
     render(){
-        let subMenu = this.state.menuList.map((menu, index) => (
-            <SubMenu key={index} title={<span><Icon type={menu.icon}/>{menu.name}</span>}>
-                {
-                    menu.subMenu.map((subItem, _index) => (
-                            <Item key={index + '' + _index}>
-                                <Link to={subItem.path}>{subItem.name}</Link>
-                            </Item>
-                        )
-                    )
-                }
-            </SubMenu>
-            )
-        )
+        let subMenu = this.state.menuList.map((menu, index) => {
+            if(!menu.subMenu){
+                return(
+                    <Item key={index}>
+                        <Link to={menu.path}>
+                            <Icon type={menu.icon}/>
+                            <span>{menu.name}</span>
+                        </Link>
+                    </Item>
+                ) 
+            }else{
+                return (
+                    <SubMenu key={index} title={<span><Icon type={menu.icon}/><span>{menu.name}</span></span>}>
+                        {
+                            menu.subMenu && menu.subMenu.map((subItem, _index) => (
+                                    <Item key={index + '' + _index}>
+                                        <Link to={subItem.path}>{subItem.name}</Link>
+                                    </Item>
+                                )
+                            )
+                        }
+                    </SubMenu>
+                )
+            }
+        })
         return(
-            <Sider className={style.siderMenu} width={256}>
-                <div className={style.logo}><b>HAPPY</b>MMALL</div>
+            <Layout.Sider className={style.siderMenu} 
+                width={256} 
+                collapsed={this.props.collapsed}>
+                <div className={style.logo}>
+                    <Icon className={style.icon} type='codepen'/>
+                    <span><b>HAPPY</b>MMALL</span>
+                </div>
                 <div style={{overflowY: 'auto', height: 'calc(100vh - 64px)'}}>
-                    <Menu
-                        mode="inline"
-                        theme="dark"
-                        defaultOpenKeys={['sub1']}>
+                    <Menu mode="inline" 
+                        theme="dark" 
+                        inlineCollapsed={this.props.collapsed}>
                         {subMenu}
                     </Menu>
                 </div>
-            </Sider>
+            </Layout.Sider>
         )
     }
 }
