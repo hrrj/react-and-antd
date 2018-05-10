@@ -1,4 +1,5 @@
 import BaseService from './BaseService'
+import qs from 'qs'
 
 /**
  * 用户相关接口
@@ -11,9 +12,11 @@ class UserService extends BaseService{
     async login(params = {username: '', password: ''}){
         let result
         try{
+            console.log('f')
             result = await this.axios('POST', '/api/manage/user/login.do', {
-                data: new URLSearchParams(params)
+                data: qs.stringify(params)
             })
+            console.log(result)
         }catch(err){
             throw new Error('接口异常!').toString()
         }
@@ -49,7 +52,7 @@ class UserService extends BaseService{
         let result
         try{
             result = await this.axios('POST', '/api/manage/user/list.do', {
-                data: new URLSearchParams(params)
+                data: qs.stringify(params)
             })
         }catch(err){
             throw new Error('接口异常!').toString()

@@ -3,6 +3,7 @@ import { message, Table } from 'antd'
 import UserService from '../../service/UserService'
 
 import style from './UserList.less'
+import PageHeader from '../../layouts/PageHeader';
 
 class UserList extends React.Component{
     constructor(props){
@@ -71,10 +72,20 @@ class UserList extends React.Component{
             title: '注册时间',
             dataIndex: 'createTime',
         }]
+        // 导航栏数据
+        const breadcrumbList = [
+            {
+                path: '/',
+                name: '首页'
+            }, {
+                path: '/user',
+                name: '用户列表'
+            }
+        ];
         return(
             <div className={style.userList}>
+                <PageHeader breadcrumbList={breadcrumbList}></PageHeader>
                 <Table className={style.userTable} 
-                    title={() => '用户列表'} 
                     loading={this.state.loading}
                     dataSource={this.state.list} 
                     columns={columns} 

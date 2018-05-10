@@ -1,54 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {Layout, Menu, Icon } from 'antd';
+import { getMenuData } from "../common/menu";
 import style from "./SiderMenu.less";
 const { SubMenu, Item } = Menu
 
-// 菜单
-const menuList = [
-    {
-        name: '首页',
-        icon: 'medium',
-        path: '/'
-    },
-    {
-        name: '商品',
-        icon: 'appstore-o',
-        subMenu: [{
-            name: '商品列表',
-            path: '/product/list'
-        },{
-            name: '品类列表',
-            path: '/product/category/list'
-        }]
-    },
-    {
-        name: '订单',
-        icon: 'file-text',
-        subMenu: [{
-            name: '订单列表',
-            path: '/order/list'
-        }]
-    },
-    {
-        name: '用户',
-        icon: 'user',
-        subMenu: [{
-            name: '用户管理',
-            path: '/user/list'
-        }]
-    },
-]
-
 class SiderMenu extends React.Component{
-    constructor(props){
-        super(props)
-        this.state = {
-            menuList: menuList
-        }
-    }
     render(){
-        let subMenu = this.state.menuList.map((menu, index) => {
+        let subMenu = getMenuData().map((menu, index) => {
             if(!menu.subMenu){
                 return(
                     <Item key={index}>

@@ -1,8 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { message, Table, Divider, Button, Input, Select, Form, Popconfirm } from 'antd'
-import ProductService from '../../service/ProductService'
-import style from './ProductList.less'
+import ProductService from '../../../service/ProductService'
+import PageHeader from '../../../layouts/PageHeader'
+import style from './index.less'
 
 const { Option } = Select
 
@@ -138,14 +139,25 @@ class ProductList extends React.Component{
             width: '15%',
             render: (text, record) => (
                 <span>
-                    <Link to={`/product/detail/${record.id}`}>详情</Link>
+                    <Link to={`/product/product-detail/${record.id}`}>详情</Link>
                     <Divider type="vertical" />
-                    <Link to={`/product/save/${record.id}`}>编辑</Link>
+                    <Link to={`/product/product-save/${record.id}`}>编辑</Link>
                 </span>
             )
         }]
+        // 导航栏数据
+        const breadcrumbList = [
+            {
+                path: '/',
+                name: '首页'
+            }, {
+                path: '/product',
+                name: '商品列表'
+            }
+        ];
         return(
             <div className={style.productList}>
+                <PageHeader breadcrumbList={breadcrumbList}></PageHeader>
                 <Form className={style.search}>
                     <Select className={style.type} 
                         defaultValue="productId" 
@@ -162,7 +174,6 @@ class ProductList extends React.Component{
                     <Button type='primary' htmlType="submit" onClick={() => this.onSearch()}>搜索</Button>
                 </Form>
                 <Table className={style.productTable}
-                    title={() => '商品列表'} 
                     loading={this.state.loading}
                     dataSource={this.state.list} 
                     columns={columns} 
@@ -178,4 +189,4 @@ class ProductList extends React.Component{
     }
 }
 
-export default ProductList
+export default withRouter(ProductList)

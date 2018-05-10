@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from "react-router-dom";
 import { Layout, message } from 'antd';
 import SiderMenu from './SiderMenu'
 import GlobalHeader from './GlobalHeader'
@@ -45,4 +46,4 @@ class BasicLayout extends React.Component{
     }
 }
 
-export default BasicLayout
+export default withRouter(BasicLayout)

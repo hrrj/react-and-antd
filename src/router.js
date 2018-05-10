@@ -20,32 +20,30 @@ const dynamicLoad = (component) => {
         },
     })
 }
+
 // 异步模块
 const Home = () => import(/* webpackChunkName: "Home" */ './pages/Home/Home')
-const ProductList = () => import(/* webpackChunkName: "ProductList" */ './pages/Product/ProductList')
+const ProductRouter = () => import(/* webpackChunkName: "ProductRouter" */ './pages/Product/router')
 const UserList = () => import(/* webpackChunkName: "UserList" */ './pages/User/UserList')
 
 class Router extends React.Component{
-    LayoutRouter(props){
-        return(
-            <BasicLayout history={props.history}>
-                <Switch>
-                    <Route exact path="/" component={dynamicLoad(Home)}/>
-                    <Route path='/product/list' component={dynamicLoad(ProductList)}/>
-                    <Route path='/user/list' component={dynamicLoad(UserList)}/>
-
-                    <Redirect exact from='/user' to='/user/list' />
-                    <Redirect exact from='/product' to='/product/list' />
-                </Switch>
-            </BasicLayout>
-        )
-    }
     render(){
+        const LayoutRouter = () => (
+                <BasicLayout>
+                    <Switch>
+                        <Route exact path="/" component={dynamicLoad(Home)}/>
+                        <Route path='/product' component={dynamicLoad(ProductRouter)}/>
+                        <Route path='/user/user-list' component={dynamicLoad(UserList)}/>
+    
+                        <Redirect exact from='/user' to='/user/user-list' />
+                    </Switch>
+                </BasicLayout>
+            )
         return(
             <BrowserRouter>
                 <Switch>
                     <Route path='/login' component={Login}/>
-                    <Route path='/' component={(props) => this.LayoutRouter(props)}/>
+                    <Route path='/' component={() => LayoutRouter()}/>
                 </Switch>
             </BrowserRouter>
         )

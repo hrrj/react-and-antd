@@ -1,4 +1,5 @@
 import BaseService from './BaseService'
+import qs from 'qs'
 
 /**
  * 用户相关接口
@@ -22,7 +23,7 @@ class ProductService extends BaseService{
         }
         try{
             result = await this.axios('POST', url, {
-                data: new URLSearchParams(data)
+                data: qs.stringify(data)
             })
         }catch(err){
             throw new Error('接口异常!').toString()
@@ -45,7 +46,7 @@ class ProductService extends BaseService{
         let result
         try{
             result = await this.axios('POST', '/api/manage/product/set_sale_status.do', {
-                data: new URLSearchParams(params)
+                data: qs.stringify(params)
             })
         }catch(err){
             throw new Error('接口异常!').toString()
