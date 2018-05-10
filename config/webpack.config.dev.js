@@ -200,7 +200,7 @@ module.exports = {
             ],
           },
           {
-            test: /\.(css)$/,
+            test: /\.(css|less)$/,
             include: /node_modules/,
             use: [
               require.resolve('style-loader'),
@@ -235,7 +235,8 @@ module.exports = {
               {
                 loader: require.resolve('less-loader'),
                 options: {
-                  sourceMap: true
+                  sourceMap: true,
+                  javascriptEnabled: true
                 }
               }
             ],

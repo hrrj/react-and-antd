@@ -223,7 +223,7 @@ module.exports = {
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
           {
-            test: /\.(css)$/,
+            test: /\.(css|less)$/,
             include: /node_modules/,
             loader: ExtractTextPlugin.extract(
               Object.assign(
@@ -267,7 +267,8 @@ module.exports = {
                     {
                       loader: require.resolve('less-loader'),
                       options: {
-                        sourceMap: true
+                        sourceMap: true,
+                        javascriptEnabled: true
                       }
                     }
                   ],
