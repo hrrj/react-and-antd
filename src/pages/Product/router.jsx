@@ -8,7 +8,7 @@ class ProductRouter extends React.Component{
         return (
             <Switch>
                 <Route path='/product/product-list' component={ProductList}/>
-                <Route path='/product/product-save/:id' component={Save}/>
+                <Route path='/product/product-save/:pid?' component={Save}/>
                 
                 
                 <Redirect exact from='/product' to='/product/product-list' />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import { message, Table, Divider, Button, Input, Select, Form, Popconfirm } from 'antd'
+import { message, Table, Divider, Button, Input, Select, Form, Popconfirm, Icon } from 'antd'
 import ProductService from '../../../service/ProductService'
 import PageHeader from '../../../layouts/PageHeader'
 import style from './index.less'
@@ -172,6 +172,11 @@ class ProductList extends React.Component{
                         value={this.state.searchKeyword}
                         onChange={(e) => this.onKeywordChage(e)}/>
                     <Button type='primary' htmlType="submit" onClick={() => this.onSearch()}>搜索</Button>
+                    <Button className={style.saveBtn} type='primary'>
+                        <Link to={`/product/product-save`}>
+                            <Icon type="plus" />添加商品
+                        </Link>
+                    </Button>
                 </Form>
                 <Table className={style.productTable}
                     loading={this.state.loading}
