@@ -12,11 +12,9 @@ class UserService extends BaseService{
     async login(params = {username: '', password: ''}){
         let result
         try{
-            console.log('f')
             result = await this.axios('POST', '/api/manage/user/login.do', {
                 data: qs.stringify(params)
             })
-            console.log(result)
         }catch(err){
             throw new Error('接口异常!').toString()
         }
