@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { message, Table, Divider, Button, Input, Select, Form, Popconfirm, Icon } from 'antd'
 import ProductService from '../../../service/ProductService'
 import PageHeader from '../../../layouts/PageHeader'
@@ -14,7 +14,7 @@ class ProductList extends React.Component{
             list: [],
             listType: 'list',
             pageNum: 1,
-            pageSize: 6,
+            pageSize: 10,
             loading: false,
             searchType : 'productId',
             searchKeyword: '',
@@ -194,4 +194,4 @@ class ProductList extends React.Component{
     }
 }
 
-export default withRouter(ProductList)
+export default ProductList

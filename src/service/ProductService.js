@@ -84,6 +84,95 @@ class ProductService extends BaseService{
             throw result.msg
         }
     }
+    //检查保存商品的表单数据
+    checkProduct(product){
+        let result = {
+            status: true,
+            msg: '验证通过！'
+        }
+        // 判断用户名不为空
+        if(typeof product.name !== 'string' || product.name.length === 0){
+            return{
+                status: false,
+                msg: '商品名称不能为空！',
+            }
+        }
+        // 判断描述不为空
+        if(typeof product.subtitle !== 'string' || product.subtitle.length === 0){
+            return{
+                status: false,
+                msg: '商品描述不能为空！',
+            }
+        }
+        // 品类ID
+        if(typeof product.categoryId !== 'number' || !(product.categoryId > 0)){
+            return{
+                status: false,
+                msg: '请选择商品品类！',
+            }
+        }
+        // 判断价格为数字且大于0
+        if(typeof product.price !== 'number' || !(product.price >= 0)){
+            return{
+                status: false,
+                msg: '请输入正确的商品价格！',
+            }
+        }
+        // 判断库存为数字且大于或等于0
+        if(typeof product.stock !== 'number' || !(product.stock >= 0)){
+            return{
+                status: false,
+                msg: '请输入正确的库存数量！',
+            }
+        }
+        return result
+    }
+    /**
+     * 保存商品
+     * @param {*} product 
+     */
+    async saveProduct(product){
+        let result
+        try{
+            result = await this.axios('POST', '/api/manage/product/save.do', {
+                data: qs.stringify(product)
+            })
+        }catch(err){
+            throw new Error("ERROR!用户数据请求异常").toString() 
+        }
+        if(result && result.status === 0){
+            // 请求成功
+            return result.data
+        }else if(result.status === 10){
+            // 需要强制登录
+            throw new Error("请登录管理员").toString() 
+        }else{
+            throw result.msg
+        }
+    }
+    /**
+     * 获取商品详情
+     * @param {*} productId 
+     */
+    async getProduct(productId){
+        let result
+        try{
+            result = await this.axios('POST', '/api/manage/product/detail.do', {
+                data: qs.stringify({productId})
+            })
+        }catch(err){
+            throw new Error("ERROR!获取商品详情异常").toString() 
+        }
+        if(result && result.status === 0){
+            // 请求成功
+            return result.data
+        }else if(result.status === 10){
+            // 需要强制登录
+            throw new Error("请登录管理员").toString() 
+        }else{
+            throw result.msg
+        }
+    }
 }
 
 export default new ProductService()

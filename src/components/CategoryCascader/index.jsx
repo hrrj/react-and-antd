@@ -1,6 +1,5 @@
 import React from 'react';
-import { Cascader, Spin } from "react";
-import { message } from "antd";
+import { Cascader, Spin, message } from "antd";
 import ProductService from '../../service/ProductService';
 import style from './index.less'
 
@@ -12,6 +11,7 @@ class CategoryCascader extends React.Component {
         };
     }
     componentWillMount() {
+        console.log(this.props)
         this.loadFirstCategory()
     }
     
@@ -50,16 +50,28 @@ class CategoryCascader extends React.Component {
         })
     }
 
+    handleChange(value, selectedOptions){
+        this.props.onCategoryChange && this.props.onCategoryChange(value, selectedOptions)
+    }
+
+    componentWillUnmount(){
+        // 重写setState， 防止异步请求导致报错
+        this.setState = (state, callback) => {
+          return;
+        };
+    }
     render() {
         return (
             <Cascader
-            popupClassName={style.cascader}
-            className={style.cascader}
-            loadData={(selectedOptions) => this.loadSecondCategory(selectedOptions)}
-            options={this.state.categoryList}
-            changeOnSelect
-            notFoundContent={this.state.categoryList.length > 0 ? <Spin size="small" /> : null}
-            placeholder='请选择分类'/>
+                value={[this.props.parentCategoryId, this.props.categoryId]}
+                popupClassName={style.cascader}
+                loadData={(selectedOptions) => this.loadSecondCategory(selectedOptions)}
+                options={this.state.categoryList}
+                changeOnSelect={true}
+                notFoundContent={this.state.categoryList.length > 0 ? <Spin size="small" /> : null}
+                placeholder='请选择分类'
+                onChange={(value, selectedOptions) => this.handleChange(value, selectedOptions)}
+            />
         );
     }
 }

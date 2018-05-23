@@ -1,55 +1,67 @@
 import React from 'react'
-import { Form, Input, InputNumber, message } from "antd"
+import { withRouter } from 'react-router-dom'
+import { Form, Input, InputNumber, Button, message } from "antd"
 import PageHeader from '../../../layouts/PageHeader'
 import style from './Save.less'
-import ProductService from '../../../service/ProductService';
 import ImageUpload from '../../../components/ImageUpload';
 import RichEditor from '../../../components/RichEditor';
 import CategoryCascader from '../../../components/CategoryCascader';
+import ProductService from '../../../service/ProductService';
 const FormItem = Form.Item
 
 class Save extends React.Component {
     constructor(params){
         super(params)
         this.state = {
-            categoryList: [],
-            imageList: []
+            id: this.props.match.params.pid,
+            name: '', // 商品名称
+            subtitle: '', // 商品描述
+            categoryId: 0,
+            parentCategoryId: 0,
+            subImages: [], 
+            price: '', // 价格
+            stock: '', // 库存
+            detail: '', //  详情
+            status: 1, //商品状态1表示在售
         }
     }
-    componentWillMount(){
-        this.loadFirstCategory()
+    componentWillMount() {
+        this.loadProduct()
     }
-    // 加载一级父级品类
-    loadFirstCategory(){
-        ProductService.getCategoryList().then(res => {
-            let formatter = res.map((item, index) => ({
-                value: item.id,
-                label: item.name,
-                isLeaf: false
-            }))
-            this.setState({
-                categoryList: formatter,
+    loadProduct(){
+        this.state.id && ProductService.getProduct(this.state.id).then(res => {
+            let images = res.subImages ? res.subImages.split(',') : []
+            res.subImages = images.map((imgUri) => {
+                return{
+                    uri: imgUri,
+                    url: res.imageHost + imgUri
+                }
             })
+            res.defaultDetail = res.detail
+            this.setState(res)
         }).catch(errMsg => {
             message.error(errMsg)
         })
     }
-    // 加载二级品类
-    loadSecondCategory(selectedOptions){
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-        targetOption.loading = true;
-        
-        ProductService.getCategoryList(targetOption.value).then(res => {
-            targetOption.loading = false
-            targetOption.children =  res.map((item, index) => ({
-                value: item.id,
-                label: item.name
-            }))
-            this.setState({
-                categoryList: [...this.state.categoryList]
-            })
-        }).catch(errMsg => {
-            message.error(errMsg)
+    // 简单字段改变，如商品名称，描述
+    onValueChange(e){
+        let name = e.target.name
+        let value = e.target.value.trim()
+        this.setState({
+            [name]: value
+        })
+    }
+    // 数字组件变化，如价格，库存
+    onInputNumberChange(value, name){
+        this.setState({
+            [name]: value
+        })
+    }
+    // 品类选择器变化
+    onCategoryChange(value){
+        this.setState({
+            categoryId: value[1],
+            parentCategoryId: value[0]
         })
     }
     // 获取图片列表
@@ -57,18 +69,45 @@ class Save extends React.Component {
         if(file.status !== 'done'){
             return;
         }
-        let imageList = fileList.map((item, index) => ({
+        let subImages = fileList.map((item, index) => ({
             ...item.response.data
         }))
         this.setState({
-            imageList
-        }, () => {
-            console.log(this.state.imageList)
+            subImages
         })
     }
     // 获取富文本编辑器内容
     getRechEditorValue(value){
-        console.log(value)
+        this.setState({
+            detail: value
+        })
+    }
+    subImagesArrayToString(){
+        return this.state.subImages.map(img => img.uri).join(",")
+    }
+    // 提交表单
+    onSubmit(){
+        let product = {
+            name: this.state.name,
+            subtitle: this.state.subtitle,
+            categoryId: parseInt(this.state.categoryId, 10),
+            subImages: this.subImagesArrayToString(),
+            price: parseFloat(this.state.price),
+            stock: parseInt(this.state.stock, 10),
+            status: this.state.status,
+            detail: this.state.detail
+        }
+        let ProductCheckResult = ProductService.checkProduct(product)
+        if(ProductCheckResult.status){
+            ProductService.saveProduct(product).then(res => {
+                message.success(res)
+                this.props.history.push('/product/product-list')
+            }).catch(errMsg => {
+                message.error(errMsg)
+            })
+        }else{
+            message.error(ProductCheckResult.msg)
+        }
     }
     render() {
         // 导航栏数据
@@ -99,20 +138,46 @@ class Save extends React.Component {
                 <PageHeader breadcrumbList={breadcrumbList}></PageHeader>
                 <Form>
                     <FormItem {...formItemLayout} label='商品名称'>
-                        <Input placeholder="请输入商品名称"/>
+                        <Input
+                            name='name'
+                            value={this.state.name}
+                            placeholder="请输入商品名称"
+                            onChange={(e) => this.onValueChange(e)}
+                        />
                     </FormItem>
                     <FormItem {...formItemLayout} label='商品描述'>
-                        <Input placeholder="请输入商品描述"/>
+                        <Input
+                            name='subtitle'
+                            value={this.state.subtitle}
+                            placeholder="请输入商品描述"
+                            onChange={(e) => this.onValueChange(e)}
+                        />
                     </FormItem>
                     <FormItem {...formItemLayout} label='商品分类'>
-                        <CategoryCascader/>
+                        <CategoryCascader 
+                            categoryId={this.state.categoryId}
+                            parentCategoryId={this.state.parentCategoryId}
+                            onCategoryChange={(value) => this.onCategoryChange(value)}
+                        />
                     </FormItem>
                     <FormItem {...formItemLayout} label='商品价格'>
-                        <InputNumber placeholder='价格' style={{width: '100px'}} min={0}/>
+                        <InputNumber 
+                            value={this.state.price}
+                            placeholder='价格' 
+                            style={{ width: '100px' }} 
+                            min={0}
+                            onChange={(value) => this.onInputNumberChange(value, 'price')}
+                        />
                         元
                     </FormItem>
                     <FormItem {...formItemLayout} label='商品库存'>
-                        <InputNumber placeholder='库存' style={{width: '100px'}} min={0}/>
+                        <InputNumber
+                            value={this.state.stock}
+                            placeholder='库存'
+                            style={{ width: '100px' }}
+                            min={0} 
+                            onChange={(value) => this.onInputNumberChange(value, 'stock')}
+                        />
                         件
                     </FormItem>
                     <FormItem 
@@ -133,10 +198,19 @@ class Save extends React.Component {
                         label='商品详情'>
                         <RichEditor onValueChange={(value) => this.getRechEditorValue(value)}/>
                     </FormItem>
+                    <FormItem 
+                        {...formItemLayout} 
+                        wrapperCol={ {
+                            xs: { span: 24 },
+                            sm: { span: 8, offset: 6},
+                        }}
+                    >
+                        <Button type='primary' onClick={() => this.onSubmit()}>提交</Button>
+                    </FormItem>
                 </Form>
             </div>
         )
     }
 }
 
-export default Save
+export default withRouter(Save)
