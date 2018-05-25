@@ -23,18 +23,23 @@ class Save extends React.Component {
             stock: '', // 库存
             detail: '', //  详情
             status: 1, //商品状态1表示在售
+            fileList: []
         }
     }
     componentWillMount() {
         this.loadProduct()
     }
+    // 出入商品id时加载商品信息
     loadProduct(){
         this.state.id && ProductService.getProduct(this.state.id).then(res => {
             let images = res.subImages ? res.subImages.split(',') : []
-            res.subImages = images.map((imgUri) => {
+            res.fileList = images.map((imgUri, index) => {
                 return{
+                    uid: index + 1,
+                    name: imgUri,
+                    status: 'done',
                     uri: imgUri,
-                    url: res.imageHost + imgUri
+                    url: res.imageHost + imgUri,
                 }
             })
             res.defaultDetail = res.detail
@@ -69,11 +74,14 @@ class Save extends React.Component {
         if(file.status !== 'done'){
             return;
         }
-        let subImages = fileList.map((item, index) => ({
-            ...item.response.data
-        }))
+        let subImages = fileList.map((item, index) => (
+            item.response ? {...item.response.data} : item
+        ))
         this.setState({
-            subImages
+            subImages,
+            fileList
+        },() => {
+            console.log(this.state.subImages)
         })
     }
     // 获取富文本编辑器内容
@@ -98,6 +106,10 @@ class Save extends React.Component {
             detail: this.state.detail
         }
         let ProductCheckResult = ProductService.checkProduct(product)
+        // 判断是否有id，有则为编辑修改商品
+        if(this.state.id){
+            product.id = this.state.id
+        }
         if(ProductCheckResult.status){
             ProductService.saveProduct(product).then(res => {
                 message.success(res)
@@ -108,6 +120,12 @@ class Save extends React.Component {
         }else{
             message.error(ProductCheckResult.msg)
         }
+    }
+    componentWillUnmount(){
+      // 重写setState， 防止异步请求导致报错
+      this.setState = (state, callback) => {
+        return;
+      };
     }
     render() {
         // 导航栏数据
@@ -187,7 +205,10 @@ class Save extends React.Component {
                             sm: { span: 16 },
                         }} 
                         label='商品图片'>
-                        <ImageUpload getImageList={(file, fileList) => this.getImageList(file, fileList)}/>
+                        <ImageUpload 
+                            fileList={this.state.fileList}
+                            getImageList={(file, fileList) => this.getImageList(file, fileList)}
+                        />
                     </FormItem>
                     <FormItem 
                         {...formItemLayout} 
@@ -196,7 +217,10 @@ class Save extends React.Component {
                             sm: { span: 16 },
                         }}
                         label='商品详情'>
-                        <RichEditor onValueChange={(value) => this.getRechEditorValue(value)}/>
+                        <RichEditor
+                            defaultDetail={this.state.detail}
+                            onValueChange={(value) => this.getRechEditorValue(value)}
+                        />
                     </FormItem>
                     <FormItem 
                         {...formItemLayout} 
