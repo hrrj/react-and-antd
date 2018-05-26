@@ -1,0 +1,37 @@
+.detail{
+    padding: 24px;
+    background-color: #fff;
+
+    :global(.ant-upload-list-picture-card) {
+        :global(.anticon-delete){
+            display: none;
+        }
+    }
+    .richEditor{
+        border-radius: 4px;
+        border: 1px solid #d9d9d9;
+        overflow-x: auto;
+        padding: 0 15px 40px;
+    }
+    :global(input[disabled]),
+    :global(.ant-cascader-picker-label)
+    {
+        color: #666;
+    }
+}
+.cascader{
+    max-width: 200px!important;
+    box-shadow: unset;
+    :global(.ant-cascader-menu){
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border-right: 0;
+    }
+    ul{
+        width: 100%;
+        li{
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}

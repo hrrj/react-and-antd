@@ -80,8 +80,6 @@ class Save extends React.Component {
         this.setState({
             subImages,
             fileList
-        },() => {
-            console.log(this.state.subImages)
         })
     }
     // 获取富文本编辑器内容

@@ -46,8 +46,14 @@ class ImageUpload extends React.Component {
                     onPreview={(file) => this.handlePreview(file)}
                     onChange={({file, fileList}) => this.handleChange(file, fileList)}
                 >
-                    <Icon type="plus" />
-                    <div className="ant-upload-text">Upload</div>
+                {
+                    this.props.disabled 
+                    ? ''
+                    : (<div>
+                        <Icon type="plus" />
+                        <div className="ant-upload-text">Upload</div>
+                    </div>)
+                }
                 </Upload>
                 <Modal 
                     visible={this.state.previewVisible} 
