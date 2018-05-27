@@ -173,6 +173,30 @@ class ProductService extends BaseService{
             throw result.msg
         }
     }
+    /**
+     * 
+     * @param {Number} categoryId 
+     * @param {String} categoryName 
+     */
+    async setCategoryName(categoryId, categoryName){
+        let result
+        try{
+            result = await this.axios('POST', '/api/manage/category/set_category_name.do', {
+                data: qs.stringify({categoryId,categoryName})
+            })
+        }catch(err){
+            throw new Error("ERROR!修改品类名称接口异常").toString() 
+        }
+        if(result && result.status === 0){
+            // 请求成功
+            return result.data
+        }else if(result.status === 10){
+            // 需要强制登录
+            throw new Error("请登录管理员").toString() 
+        }else{
+            throw result.msg
+        }
+    }
 }
 
 export default new ProductService()
