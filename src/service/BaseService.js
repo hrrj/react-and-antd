@@ -1,4 +1,5 @@
 import axios from 'axios';
+let CancelToken = axios.CancelToken
 /**
  * 主要params参数
  * @params method {string} 方法名
@@ -13,11 +14,14 @@ import axios from 'axios';
  * 其他更多拓展参看axios文档后 自行拓展
  * 注意：params中的数据会覆盖method url 参数，所以如果指定了这2个参数则不需要在params中带入
 */
+
 class BaseService {
-    axios(method, url, params) {
+    CANCELTOKEN = 'CANCELTOKEN' // 用于取消请求时的参数验证，防止取消请求的异常信息显示给用户
+    axios(method, url, params, cancelTokenFn) {
         return new Promise((resolve, reject) => {
-            if (typeof params !== 'object') 
+            if (typeof params !== 'object') {
                 params = {};
+            }
             let _option = {
                 method,
                 url,
@@ -32,6 +36,11 @@ class BaseService {
                 },
                 ...params
             }
+
+            if(cancelTokenFn){
+                _option.cancelToken = new CancelToken(cancelTokenFn)
+            }
+            
             axios
                 .request(_option)
                 .then(res => {

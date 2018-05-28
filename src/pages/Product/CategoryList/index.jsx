@@ -34,6 +34,8 @@ class CategoryList extends React.Component {
                 loading: false,
                 list: res
             })
+        }).catch(errMsg => {
+            message.error(errMsg)
         })
     }
     // 修改商品名称
@@ -59,10 +61,8 @@ class CategoryList extends React.Component {
         this.loadCateogryList(categoryId)
     }
     componentWillUnmount(){
-      // 重写setState， 防止异步请求导致报错
-      this.setState = (state, callback) => {
-        return;
-      };
+      // 取消异步操作
+      ProductService.cancelCategoryListRequest(ProductService.CANCELTOKEN)
     }
     render() {
         // 表头

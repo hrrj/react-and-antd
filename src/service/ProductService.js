@@ -70,9 +70,15 @@ class ProductService extends BaseService{
         try{
             result = await this.axios('POST', '/api/manage/category/get_category.do', {
                 data: qs.stringify({categoryId})
+            }, (c) => {
+                // 返回请求取消函数
+                this.cancelCategoryListRequest = c
             })
         }catch(err){
-            throw new Error('接口异常!').toString() 
+            if(err.message === this.CANCELTOKEN){
+                return;
+            }
+            throw new Error('接口请求异常!').toString() 
         }
         // 请求成功
         if(result && result.status === 0){
