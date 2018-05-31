@@ -35,6 +35,7 @@ class CategoryList extends React.Component {
                 list: res
             })
         }).catch(errMsg => {
+            if(errMsg.message === ProductService.CANCELTOKEN) return
             message.error(errMsg)
         })
     }

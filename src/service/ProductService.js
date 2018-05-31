@@ -24,9 +24,13 @@ class ProductService extends BaseService{
         try{
             result = await this.axios('POST', url, {
                 data: qs.stringify(data)
+            }, (c) => {
+                // 返回取消请求的函数
+                this.cancelProductListRequest = c
             })
         }catch(err){
-            throw new Error('接口异常!').toString()
+            if(err.message === this.CANCELTOKEN) throw new Error(this.CANCELTOKEN)
+            throw new Error('接口请求异常!').toString() 
         }
         // 请求成功
         if(result && result.status === 0){
@@ -71,13 +75,11 @@ class ProductService extends BaseService{
             result = await this.axios('POST', '/api/manage/category/get_category.do', {
                 data: qs.stringify({categoryId})
             }, (c) => {
-                // 返回请求取消函数
+                // 返回取消请求的函数
                 this.cancelCategoryListRequest = c
             })
         }catch(err){
-            if(err.message === this.CANCELTOKEN){
-                return;
-            }
+            if(err.message === this.CANCELTOKEN) throw new Error(this.CANCELTOKEN)
             throw new Error('接口请求异常!').toString() 
         }
         // 请求成功

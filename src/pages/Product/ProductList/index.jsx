@@ -65,6 +65,7 @@ class ProductList extends React.Component{
                 ...res
             })
         }).catch(errMsg => {
+            if(errMsg.message === ProductService.CANCELTOKEN) return
             message.error(errMsg)
         })
     }
@@ -93,10 +94,8 @@ class ProductList extends React.Component{
         })
     }
     componentWillUnmount(){
-      // 重写setState， 防止异步请求导致报错
-      this.setState = (state, callback) => {
-        return;
-      };
+      // 取消异步操作
+      ProductService.cancelProductListRequest(ProductService.CANCELTOKEN)
     }
     render(){
         // 表头
