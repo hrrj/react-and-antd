@@ -46,13 +46,13 @@ class BaseService {
                 .then(res => {
                     resolve(typeof res.data === 'object'
                         ? res.data
-                        : JSON.parse(res.data))
+                        : JSON.parse(res.data)
+                    )
                 }, error => {
-                    if (error.response) {
-                        reject(error.response.data)
-                    } else {
-                        reject(error)
-                    }
+                    reject(error.response 
+                        ? error.response.data
+                        : error
+                    )
                 })
         })
     }

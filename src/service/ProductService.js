@@ -29,7 +29,7 @@ class ProductService extends BaseService{
                 this.cancelProductListRequest = c
             })
         }catch(err){
-            if(err.message === this.CANCELTOKEN) throw new Error(this.CANCELTOKEN)
+            if(err.message === this.CANCELTOKEN) throw this.CANCELTOKEN
             throw new Error('接口请求异常!').toString() 
         }
         // 请求成功
@@ -37,6 +37,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString()
         }else{
             throw result.msg
@@ -60,6 +61,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString()
         }else{
             throw result.msg
@@ -87,6 +89,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString()
         }else{
             throw result.msg
@@ -153,6 +156,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString() 
         }else{
             throw result.msg
@@ -176,6 +180,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString() 
         }else{
             throw result.msg
@@ -200,6 +205,7 @@ class ProductService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString() 
         }else{
             throw result.msg

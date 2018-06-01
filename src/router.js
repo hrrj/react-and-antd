@@ -24,6 +24,7 @@ const dynamicLoad = (component) => {
 // 异步模块
 const Home = () => import(/* webpackChunkName: "Home" */ './pages/Home/Home')
 const ProductRouter = () => import(/* webpackChunkName: "ProductRouter" */ './pages/Product/router')
+const OrderList = () => import(/* webpackChunkName: "OrderList" */ './pages/Order/OrderList')
 const UserList = () => import(/* webpackChunkName: "UserList" */ './pages/User/UserList')
 
 class Router extends React.Component{
@@ -33,9 +34,11 @@ class Router extends React.Component{
                     <Switch>
                         <Route exact path="/" component={dynamicLoad(Home)}/>
                         <Route path='/product' component={dynamicLoad(ProductRouter)}/>
+                        <Route path='/order/order-list' component={dynamicLoad(OrderList)}/>
                         <Route path='/user/user-list' component={dynamicLoad(UserList)}/>
     
                         <Redirect exact from='/user' to='/user/user-list' />
+                        <Redirect exact from='/order' to='/order/order-list' />
                     </Switch>
                 </BasicLayout>
             )

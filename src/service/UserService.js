@@ -60,6 +60,7 @@ class UserService extends BaseService{
             return result.data
         }else if(result.status === 10){
             // 需要强制登录
+            window.location.replace('/login')
             throw new Error("请登录管理员").toString()
         }else{
             throw result.msg

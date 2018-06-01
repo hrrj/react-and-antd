@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { message, Table, Divider, Button, Input, Select, Form, Popconfirm, Icon } from 'antd'
-import ProductService from '../../../service/ProductService'
-import PageHeader from '../../../layouts/PageHeader'
-import style from './index.less'
+import { message, Table, Button, Input, Select, Form } from 'antd'
+import OrderService from '../../service/OrderService'
+import PageHeader from '../../layouts/PageHeader'
+import style from './OrderList.less'
 
 const { Option } = Select
 
-class ProductList extends React.Component{
+class OrderList extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -21,7 +21,7 @@ class ProductList extends React.Component{
         }
     }
     componentWillMount(){
-        this.loadProductList()
+        this.loadOrderList()
     }
     // 搜索框类型变化事件
     onTypeChage(value){
@@ -36,7 +36,7 @@ class ProductList extends React.Component{
         })
     }
     // 加载用户列表
-    loadProductList(){
+    loadOrderList(){
         this.setState({loading: true}) // 显示loading图标
         let params = {
             listType: this.state.listType,
@@ -47,17 +47,15 @@ class ProductList extends React.Component{
             params.searchType = this.state.searchType
             params.searchKeyword = this.state.searchKeyword
         }
-        ProductService.getProductList(params).then(res => {
+        OrderService.getOrderList(params).then(res => {
             // 格式化列表数据
-            res.list = res.list.map((product, index) => ({
+            res.list = res.list.map((order, index) => ({
                     key: index,
-                    id: product.id,
-                    info: {
-                        name: product.name,
-                        subtitle: product.subtitle
-                    },
-                    price: product.price,
-                    status: product.status
+                    id: order.orderNo,
+                    payment: order.payment,
+                    receiverName: order.receiverName,
+                    statusDesc: order.statusDesc,
+                    createTime: order.createTime
                })
             )
             this.setState({
@@ -65,7 +63,7 @@ class ProductList extends React.Component{
                 ...res
             })
         }).catch(errMsg => {
-            if(errMsg === ProductService.CANCELTOKEN) return
+            if(errMsg === OrderService.CANCELTOKEN) return
             message.error(errMsg)
         })
     }
@@ -75,73 +73,38 @@ class ProductList extends React.Component{
         this.setState({
             listType,
             pageNum: 1,
-        }, () => this.loadProductList())
+        }, () => this.loadOrderList())
     }
     // 改变页码事件
     onChange(pageNum){
-        this.setState({pageNum}, () => this.loadProductList())
-    }
-    // 改变商品状态
-    onSetProductStatus(record){
-        ProductService.setSaleStatus({
-            productId: record.id,
-            status: record.status === 1 ? 2 : 1
-        }).then(res => {
-            message.success(res)
-            this.loadProductList()
-        }).catch(errMsg => {
-            message.error(errMsg)
-        })
+        this.setState({pageNum}, () => this.loadOrderList())
     }
     componentWillUnmount(){
       // 取消异步数据请求
-      ProductService.cancelProductListRequest(ProductService.CANCELTOKEN)
+      OrderService.cancelOrderListRequest(OrderService.CANCELTOKEN)
     }
     render(){
         // 表头
         let columns = [{
-            title: '商品ID',
+            title: '订单号',
             dataIndex: 'id',
-            width: '10%',
         }, {
-            title: '商品信息',
-            dataIndex: 'info',
-            width: '40%',
-            render: (text, record) => (
-                <span>
-                    <p>{record.info.name}</p>
-                    <p>{record.info.subtitle}</p>
-                </span>
-            )
+            title: '收件人',
+            dataIndex: 'receiverName',
         }, {
-            title: '价格',
-            dataIndex: 'price',
-            width: '10%',
+            title: '订单状态',
+            dataIndex: 'statusDesc',
         }, {
-            title: '状态',
-            dataIndex: 'status',
-            width: '15%',
-            render: (text, record) => (
-                <Popconfirm 
-                    title={record.status === 1 ? '确定要下架该商品？' : '确定要上架该商品？'} 
-                    onConfirm={() => this.onSetProductStatus(record)}>
-                    <Button type={record.status === 1 ? 'primary' : 'default'} size='small'>
-                    {
-                        record.status === 1 ? '在售' : '已下架'
-                    }
-                    </Button>
-                </Popconfirm>
-            )
+            title: '订单总价',
+            dataIndex: 'payment',
+        }, {
+            title: '创建时间',
+            dataIndex: 'createTime',
         }, {
             title: '操作',
             dataIndex: 'opear',
-            width: '15%',
             render: (text, record) => (
-                <span>
-                    <Link to={`/product/product-detail/${record.id}`}>详情</Link>
-                    <Divider type="vertical" />
-                    <Link to={`/product/product-save/${record.id}`}>编辑</Link>
-                </span>
+                <Link to={`/product/product-detail/${record.id}`}>详情</Link>
             )
         }]
         // 导航栏数据
@@ -150,12 +113,12 @@ class ProductList extends React.Component{
                 path: '/',
                 name: '首页'
             }, {
-                path: '/product',
-                name: '商品列表'
+                path: '/order',
+                name: '订单列表'
             }
         ];
         return(
-            <div className={style.productList}>
+            <div className={style.orderList}>
                 <PageHeader breadcrumbList={breadcrumbList}></PageHeader>
                 <Form className={style.search}>
                     <Select className={style.type} 
@@ -171,11 +134,6 @@ class ProductList extends React.Component{
                         value={this.state.searchKeyword}
                         onChange={(e) => this.onKeywordChage(e)}/>
                     <Button type='primary' htmlType="submit" onClick={() => this.onSearch()}>搜索</Button>
-                    <Button className={style.saveBtn} type='primary'>
-                        <Link to={`/product/product-save`}>
-                            <Icon type="plus" />添加商品
-                        </Link>
-                    </Button>
                 </Form>
                 <Table className={style.productTable}
                     loading={this.state.loading}
@@ -193,4 +151,4 @@ class ProductList extends React.Component{
     }
 }
 
-export default ProductList
+export default OrderList

@@ -62,7 +62,7 @@ class CategoryList extends React.Component {
         this.loadCateogryList(categoryId)
     }
     componentWillUnmount(){
-      // 取消异步操作
+      // 取消异步数据请求
       ProductService.cancelCategoryListRequest(ProductService.CANCELTOKEN)
     }
     render() {
