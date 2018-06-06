@@ -1,11 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { message, Table, Button, Input, Select, Form } from 'antd'
+import { message, Table, Button, Input, Form } from 'antd'
 import OrderService from '../../service/OrderService'
 import PageHeader from '../../layouts/PageHeader'
 import style from './OrderList.less'
-
-const { Option } = Select
 
 class OrderList extends React.Component{
     constructor(props){
@@ -16,8 +14,7 @@ class OrderList extends React.Component{
             pageNum: 1,
             pageSize: 10,
             loading: false,
-            searchType : 'productId',
-            searchKeyword: '',
+            orderNo: '',
         }
     }
     componentWillMount(){
@@ -26,16 +23,16 @@ class OrderList extends React.Component{
     // 搜索框类型变化事件
     onTypeChage(value){
         this.setState({
-            searchType: value
+            orderNo: value
         })
     }
-    // 搜索框关键词变化事件
-    onKeywordChage(e){
+    // 搜索框内容变化事件
+    onOrderNoChage(e){
         this.setState({
-            searchKeyword: e.target.value
+            orderNo: e.target.value
         })
     }
-    // 加载用户列表
+    // 加载订单列表
     loadOrderList(){
         this.setState({loading: true}) // 显示loading图标
         let params = {
@@ -44,8 +41,7 @@ class OrderList extends React.Component{
             pageSize: this.state.pageSize,
         }
         if(this.state.listType === 'search'){
-            params.searchType = this.state.searchType
-            params.searchKeyword = this.state.searchKeyword
+            params.orderNo = this.state.orderNo
         }
         OrderService.getOrderList(params).then(res => {
             // 格式化列表数据
@@ -55,7 +51,7 @@ class OrderList extends React.Component{
                     payment: order.payment,
                     receiverName: order.receiverName,
                     statusDesc: order.statusDesc,
-                    createTime: order.createTime
+                    createTime: new Date(order.createTime).toLocaleString()
                })
             )
             this.setState({
@@ -63,13 +59,17 @@ class OrderList extends React.Component{
                 ...res
             })
         }).catch(errMsg => {
+            this.setState({
+                loading: false,
+                list: []
+            })
             if(errMsg === OrderService.CANCELTOKEN) return
             message.error(errMsg)
         })
     }
-    // 搜索商品事件
+    // 搜索订单
     onSearch(){
-        let listType = this.state.searchKeyword === '' ? 'list' : 'search'
+        let listType = this.state.orderNo === '' ? 'list' : 'search'
         this.setState({
             listType,
             pageNum: 1,
@@ -97,14 +97,14 @@ class OrderList extends React.Component{
         }, {
             title: '订单总价',
             dataIndex: 'payment',
-        }, {
+        }, { 
             title: '创建时间',
             dataIndex: 'createTime',
         }, {
             title: '操作',
             dataIndex: 'opear',
             render: (text, record) => (
-                <Link to={`/product/product-detail/${record.id}`}>详情</Link>
+                <Link to={`/order/order-detail/${record.id}`}>详情</Link>
             )
         }]
         // 导航栏数据
@@ -121,18 +121,12 @@ class OrderList extends React.Component{
             <div className={style.orderList}>
                 <PageHeader breadcrumbList={breadcrumbList}></PageHeader>
                 <Form className={style.search}>
-                    <Select className={style.type} 
-                        defaultValue="productId" 
-                        name="searchType"
-                        onChange={(e) => this.onTypeChage(e)}>
-                        <Option value="productId">按商品ID查询</Option>
-                        <Option value="productName">按商品名称查询</Option>
-                    </Select>
                     <Input className={style.keyword} 
                         type='text'
-                        name='searchKeyword'
-                        value={this.state.searchKeyword}
-                        onChange={(e) => this.onKeywordChage(e)}/>
+                        name='orderNo'
+                        placeholder='请输入订单ID'
+                        value={this.state.orderNo}
+                        onChange={(e) => this.onOrderNoChage(e)}/>
                     <Button type='primary' htmlType="submit" onClick={() => this.onSearch()}>搜索</Button>
                 </Form>
                 <Table className={style.productTable}

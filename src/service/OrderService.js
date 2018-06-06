@@ -9,7 +9,7 @@ class UserService extends BaseService{
      * 获取订单列表数据
      * @param {*} params 
      */
-    async getOrderList(params = {listType: 'list', pageNum: 10, pageSize: 1, searchType: '', searchKeyword: ''}){
+    async getOrderList(params = {listType: 'list', pageNum: 10, pageSize: 1, orderNo: ''}){
         let result, url, data = {}
         if(params.listType === 'list'){
             url = '/api/manage/order/list.do'
@@ -19,7 +19,7 @@ class UserService extends BaseService{
             url = '/api/manage/order/search.do'
             data.pageNum = params.pageNum
             data.pageSize = params.pageSize
-            data[params.searchType] = params.searchKeyword
+            data.orderNo = params.orderNo
         }
         try{
             result = await this.axios('POST', url, {
