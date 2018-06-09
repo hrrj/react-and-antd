@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
 import { Form, Input, InputNumber, message } from "antd"
 import PageHeader from '../../../layouts/PageHeader'
 import style from './Detail.less'
@@ -8,7 +7,7 @@ import CategoryCascader from '../../../components/CategoryCascader';
 import ProductService from '../../../service/ProductService';
 const FormItem = Form.Item
 
-class detail extends React.Component {
+class Detail extends React.Component {
     constructor(params){
         super(params)
         this.state = {
@@ -151,4 +150,4 @@ class detail extends React.Component {
     }
 }
 
-export default withRouter(detail)
+export default Detail

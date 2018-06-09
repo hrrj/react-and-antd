@@ -25,6 +25,7 @@ const dynamicLoad = (component) => {
 const Home = () => import(/* webpackChunkName: "Home" */ './pages/Home/Home')
 const ProductRouter = () => import(/* webpackChunkName: "ProductRouter" */ './pages/Product/router')
 const OrderList = () => import(/* webpackChunkName: "OrderList" */ './pages/Order/OrderList')
+const OrderDetail = () => import(/* webpackChunkName: "OrderDetail" */ './pages/Order/Detail')
 const UserList = () => import(/* webpackChunkName: "UserList" */ './pages/User/UserList')
 
 class Router extends React.Component{
@@ -35,6 +36,7 @@ class Router extends React.Component{
                         <Route exact path="/" component={dynamicLoad(Home)}/>
                         <Route path='/product' component={dynamicLoad(ProductRouter)}/>
                         <Route path='/order/order-list' component={dynamicLoad(OrderList)}/>
+                        <Route path='/order/order-detail/:orderNo' component={dynamicLoad(OrderDetail)}/>
                         <Route path='/user/user-list' component={dynamicLoad(UserList)}/>
     
                         <Redirect exact from='/user' to='/user/user-list' />

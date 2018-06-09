@@ -43,6 +43,56 @@ class UserService extends BaseService{
             throw result.msg
         }
     }
+    /**
+     * 获取订单详情
+     * @param {String} orderNo 订单号
+     */
+    async getOrderDetail(orderNo){
+        let result
+        try{
+            result = await this.axios('POST', '/api/manage/order/detail.do', {
+                data: qs.stringify({orderNo})
+            }, (c) => {
+                this.cancelOrderDetailRequest = c
+            })
+        }catch(err){
+            throw new Error("ERROR!订单详情请求异常")
+        }
+        // 请求成功
+        if(result && result.status === 0){
+            return result.data
+        }else if(result.status === 10){
+            // 需要强制登录
+            window.location.replace('/login')
+            throw new Error("请登录管理员").toString()
+        }else{
+            throw result.msg
+        }
+    }
+    /**
+     * 发货
+     * @param {String} orderNo 
+     */
+    async sendGoods(orderNo){
+        let result
+        try{
+            result = await this.axios('POST', '/api/manage/order/send_goods.do', {
+                data: qs.stringify({orderNo})
+            })
+        }catch(err){
+            throw new Error("ERROR!发货异常")
+        }
+        // 请求成功
+        if(result && result.status === 0){
+            return result.data
+        }else if(result.status === 10){
+            // 需要强制登录
+            window.location.replace('/login')
+            throw new Error("请登录管理员").toString()
+        }else{
+            throw result.msg
+        }
+    }
 }
 
 export default new UserService()
