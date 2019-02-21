@@ -1,5 +1,5 @@
 ## Technology stack  
-react@16.2 + redux@5.0.7 + react-router@4.2.0 + axios@0.18.0 antd@3.3.3  
+react@16.2 + redux@5.0.7 + react-router@4.2.0 + axios@0.18.0 + antd@3.3.3  
 
 ## Project introduce
 
